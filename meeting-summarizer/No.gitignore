@@ -1,0 +1,67 @@
+# ===================================
+# MeetingMind - .gitignore
+# ===================================
+
+# ── ENVIRONMENT VARIABLES (NEVER upload these) ──
+.env
+.env.local
+.env.production
+.env.development
+secrets.txt
+*.key
+
+# ── PYTHON ──
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+wheels/
+
+# ── VIRTUAL ENVIRONMENT ──
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ── NODE / JAVASCRIPT ──
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── USER DATA (security) ──
+users.json
+users.db
+*.db
+*.sqlite
+*.sqlite3
+
+# ── VS CODE ──
+.vscode/
+
+# ── OS FILES ──
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ── LOGS ──
+*.log
+logs/
+
+# ── UPLOADS / TEMP FILES ──
+uploads/
+temp/
+tmp/
+*.tmp

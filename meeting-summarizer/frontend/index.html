@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MeetingMind - AI-Powered Meeting Summarizer</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body onload="checkAuth()">
+  <div class="bg-orb"></div>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="header-left">
+          <svg class="app-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <!-- Brain/Mind shape with convergence lines -->
+            <!-- Left hemisphere -->
+            <path d="M 20 24 Q 16 20 16 28 Q 16 36 20 38" fill="none" stroke="url(#creativeGradient)" stroke-width="2.5"
+              stroke-linecap="round" />
+            <!-- Right hemisphere -->
+            <path d="M 44 24 Q 48 20 48 28 Q 48 36 44 38" fill="none" stroke="url(#creativeGradient)" stroke-width="2.5"
+              stroke-linecap="round" />
+            <!-- Center connection -->
+            <line x1="32" y1="24" x2="32" y2="40" stroke="url(#creativeGradient)" stroke-width="2.5"
+              stroke-linecap="round" />
+            <!-- Top node (insight/output) -->
+            <circle cx="32" cy="18" r="3.5" fill="url(#creativeGradient)" />
+            <!-- Bottom nodes (inputs) -->
+            <circle cx="20" cy="44" r="2.5" fill="url(#creativeGradient)" opacity="0.8" />
+            <circle cx="32" cy="48" r="2.5" fill="url(#creativeGradient)" opacity="0.8" />
+            <circle cx="44" cy="44" r="2.5" fill="url(#creativeGradient)" opacity="0.8" />
+            <!-- Connecting lines from bottom to center -->
+            <line x1="20" y1="44" x2="28" y2="38" stroke="url(#creativeGradient)" stroke-width="1.5"
+              stroke-linecap="round" opacity="0.6" />
+            <line x1="32" y1="48" x2="32" y2="40" stroke="url(#creativeGradient)" stroke-width="1.5"
+              stroke-linecap="round" opacity="0.6" />
+            <line x1="44" y1="44" x2="36" y2="38" stroke="url(#creativeGradient)" stroke-width="1.5"
+              stroke-linecap="round" opacity="0.6" />
+            <!-- Glow effect lines -->
+            <circle cx="32" cy="32" r="18" fill="none" stroke="url(#creativeGradient)" stroke-width="0.8"
+              opacity="0.3" />
+            <!-- Gradient definition -->
+            <defs>
+              <linearGradient id="creativeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <h1 class="app-title">MeetingMind</h1>
+        </div>
+        <div class="header-right">
+          <button id="stats-nav-btn" class="stats-nav-btn">📊 Stats</button>
+          <button id="new-meeting-btn-nav" class="new-meeting-btn">＋ New Meeting</button>
+          <div class="user-menu">
+            <button class="user-menu-toggle" id="userMenuToggle">
+              <span class="user-avatar" id="userAvatar">👤</span>
+              <span class="user-name" id="userName">User</span>
+            </button>
+            <div class="user-dropdown" id="userDropdown">
+              <div
+                style="padding: 10px 15px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; color: rgba(255,255,255,0.55); font-weight: 500;">
+                <span id="userEmailDisplay">user@example.com</span>
+              </div>
+              <button id="logoutBtn" class="dropdown-item" type="button">
+                <span>🚪</span> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <h1 class="gradient-text">Turn Meetings Into Action</h1>
+      <p class="hero-subtext">Paste any transcript and get AI-powered summaries, action items, and follow-up emails
+        instantly.</p>
+      <div class="hero-stats">
+        <div class="stat-badge">⚡ Instant Results</div>
+        <div class="stat-badge">🎯 Action Items Extracted</div>
+        <div class="stat-badge">✉️ Email Draft Ready</div>
+      </div>
+    </section>
+
+    <div class="main-content">
+      <!-- Main Section (Left Side) -->
+      <main class="main-section">
+        <!-- Input Tabs -->
+        <div class="input-section">
+          <div class="tab-bar">
+            <button class="tab-button active" data-tab="paste-tab">Paste Text</button>
+            <button class="tab-button" data-tab="upload-tab">Upload File</button>
+            <div class="tab-indicator"></div>
+          </div>
+
+          <!-- Paste Text Tab -->
+          <div id="paste-tab" class="tab-content active">
+            <textarea id="transcriptTextarea" class="transcript-input"
+              placeholder="Paste your meeting transcript here..." minlength="0"></textarea>
+          </div>
+
+          <!-- Upload File Tab -->
+          <div id="upload-tab" class="tab-content">
+            <div class="file-upload-zone" id="fileUploadZone">
+              <div class="upload-icon">☁️</div>
+              <p class="upload-text">Drag and drop your file here, or click to browse</p>
+              <div class="supported-formats">
+                <span class="format-badge">TXT</span>
+                <span class="format-badge">PDF</span>
+                <span class="format-badge">DOCX</span>
+              </div>
+              <p class="upload-audio-note">Audio &amp; Video: MP3, MP4, WAV, M4A, WEBM, OGG, FLAC (max 25MB)</p>
+              <input type="file" id="fileInput" accept=".txt,.pdf,.docx,.mp3,.mp4,.wav,.m4a,.webm,.ogg,.flac"
+                style="display: none;">
+            </div>
+            <p class="file-name" id="fileName" style="display: none;"></p>
+          </div>
+        </div>
+
+        <!-- Meeting Template Selector -->
+        <div class="template-selector">
+          <label class="template-label">Meeting Type</label>
+          <div class="template-grid">
+            <button type="button" class="template-btn active" data-template="general">
+              <span class="template-icon">📋</span>
+              <span class="template-name">General</span>
+            </button>
+            <button type="button" class="template-btn" data-template="standup">
+              <span class="template-icon">🚀</span>
+              <span class="template-name">Standup</span>
+            </button>
+            <button type="button" class="template-btn" data-template="client_call">
+              <span class="template-icon">💼</span>
+              <span class="template-name">Client Call</span>
+            </button>
+            <button type="button" class="template-btn" data-template="interview">
+              <span class="template-icon">🎯</span>
+              <span class="template-name">Interview</span>
+            </button>
+            <button type="button" class="template-btn" data-template="brainstorm">
+              <span class="template-icon">💡</span>
+              <span class="template-name">Brainstorm</span>
+            </button>
+            <button type="button" class="template-btn" data-template="one_on_one">
+              <span class="template-icon">👥</span>
+              <span class="template-name">1-on-1</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Summarize Button -->
+        <button id="summarizeBtn" class="summarize-btn">Generate Summary</button>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+          <div class="spinner"></div>
+          <p>Analyzing your meeting...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="results-section" style="display: none;">
+          <!-- Language Badge -->
+          <div id="language-badge" class="language-badge" style="display:none;">
+            <span id="language-badge-text"></span>
+          </div>
+
+          <!-- Results Tab Bar -->
+          <div class="results-tab-bar">
+            <button class="result-tab-button active" data-result-tab="summary-tab">Summary</button>
+            <button class="result-tab-button" data-result-tab="actions-tab">Action Items</button>
+            <button class="result-tab-button" data-result-tab="decisions-tab">Decisions</button>
+            <button class="result-tab-button" data-result-tab="topics-tab">Key Topics</button>
+            <div class="result-tab-indicator"></div>
+          </div>
+
+          <!-- Summary Tab -->
+          <div id="summary-tab" class="result-tab-content active">
+            <div class="result-card">
+              <p id="summaryText"></p>
+            </div>
+          </div>
+
+          <!-- Action Items Tab -->
+          <div id="actions-tab" class="result-tab-content">
+            <div class="result-card">
+              <table class="action-items-table" id="actionItemsTable">
+                <thead>
+                  <tr>
+                    <th class="checkbox-col"></th>
+                    <th>Task</th>
+                    <th>Owner</th>
+                    <th>Deadline</th>
+                  </tr>
+                </thead>
+                <tbody id="actionItemsBody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Decisions Tab -->
+          <div id="decisions-tab" class="result-tab-content">
+            <div class="result-card">
+              <ol id="decisionsList" class="decisions-list">
+              </ol>
+            </div>
+          </div>
+
+          <!-- Key Topics Tab -->
+          <div id="topics-tab" class="result-tab-content">
+            <div class="result-card">
+              <div id="topicsList" class="topics-list">
+              </div>
+            </div>
+          </div>
+
+          <!-- Sentiment & Tone Analysis Section -->
+          <div id="sentiment-section" class="sentiment-section" style="display:none;">
+            <h3 class="sentiment-title">Meeting Sentiment & Tone</h3>
+
+            <div class="sentiment-grid">
+
+              <!-- Overall Sentiment Card -->
+              <div class="sentiment-card">
+                <p class="sentiment-label">Overall Sentiment</p>
+                <p id="sentiment-overall" class="sentiment-value"></p>
+                <div class="sentiment-bar-track">
+                  <div id="sentiment-bar" class="sentiment-bar"></div>
+                </div>
+                <p id="sentiment-score-label" class="sentiment-score-label"></p>
+              </div>
+
+              <!-- Tone Card -->
+              <div class="sentiment-card">
+                <p class="sentiment-label">Meeting Tone</p>
+                <p id="sentiment-tone" class="sentiment-value"></p>
+                <p id="sentiment-tone-desc" class="sentiment-tone-desc"></p>
+              </div>
+
+            </div>
+
+            <!-- Speaker Sentiments -->
+            <div id="speaker-sentiments" class="speaker-sentiments"></div>
+
+          </div>
+
+          <!-- Template-Specific Results -->
+          <div id="template-results" class="template-results" style="display:none;">
+            <h3 class="template-results-title">Template Insights</h3>
+            <div id="template-results-content" class="template-results-content"></div>
+          </div>
+
+          <!-- Speaker Analytics Dashboard -->
+          <div id="speaker-analytics-section" class="analytics-section" style="display:none;">
+            <h3 class="analytics-title">Speaker Analytics</h3>
+
+            <!-- Top stats row -->
+            <div class="analytics-stats">
+              <div class="analytics-stat-card">
+                <p class="analytics-stat-label">Speakers</p>
+                <p id="analytics-total-speakers" class="analytics-stat-value">0</p>
+              </div>
+              <div class="analytics-stat-card">
+                <p class="analytics-stat-label">Total Words</p>
+                <p id="analytics-total-words" class="analytics-stat-value">0</p>
+              </div>
+              <div class="analytics-stat-card">
+                <p class="analytics-stat-label">Most Active</p>
+                <p id="analytics-most-active" class="analytics-stat-value">—</p>
+              </div>
+            </div>
+
+            <!-- Per-speaker bars -->
+            <div id="analytics-speakers-list" class="analytics-speakers-list"></div>
+
+            <!-- No speakers message -->
+            <div id="analytics-no-speakers" class="analytics-no-speakers" style="display:none;">
+              <p>No speaker names detected in the transcript. To see analytics, format lines as <code>Name: text</code>.
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Email Draft Section -->
+          <div class="email-section">
+            <h3>✉️ Follow-up Email</h3>
+            <div class="email-draft-box">
+              <pre id="emailDraft"></pre>
+            </div>
+            <button id="copyEmailBtn" class="copy-btn">📋 Copy Email</button>
+            <button id="send-email-btn" class="send-email-btn" style="display:none;">
+              ✉ Send Email
+            </button>
+            <span id="copyFeedback" class="copy-feedback" style="display: none;">Copied!</span>
+          </div>
+
+          <!-- Export Buttons -->
+          <div class="export-buttons">
+            <button id="copySummaryBtn" class="export-btn">📋 Copy Summary</button>
+            <button id="downloadTxtBtn" class="export-btn">⬇️ Download TXT</button>
+            <button id="downloadPdfBtn" class="export-btn">🖨️ Download PDF</button>
+            <button id="download-pdf-btn" class="download-pdf-btn" style="display:none;">📄 Download PDF Report</button>
+          </div>
+
+          <!-- New Meeting Button Row -->
+          <div id="new-meeting-results-row" class="new-meeting-results-row" style="display:none;">
+            <button id="new-meeting-btn-results" class="new-meeting-btn new-meeting-btn-large">＋ Start New
+              Meeting</button>
+            <p class="new-meeting-hint">This will clear the current summary and transcript</p>
+          </div>
+        </div>
+      </main>
+
+      <!-- History Sidebar -->
+      <aside class="history-sidebar" id="historySidebar">
+        <div class="sidebar-header">
+          <h3>History</h3>
+          <button id="sidebarToggle" class="sidebar-toggle">×</button>
+        </div>
+        <div class="history-list" id="historyList">
+          <p class="empty-history">No summaries yet</p>
+        </div>
+        <button id="clearHistoryBtn" class="clear-history-btn" style="display: none;">Clear History</button>
+      </aside>
+    </div>
+
+    <!-- Mobile Sidebar Toggle Button -->
+    <button id="mobileHistoryToggle" class="mobile-history-toggle">📋 History</button>
+
+    <!-- Stats Page -->
+    <div id="stats-page" class="stats-page" style="display:none;">
+
+      <div class="stats-header">
+        <button id="stats-back-btn" class="stats-back-btn">← Back</button>
+        <h2 class="stats-page-title">Your Meeting Stats</h2>
+        <p class="stats-page-subtitle">Insights from your summarized meetings</p>
+      </div>
+
+      <!-- Top stat cards row -->
+      <div class="stats-cards-row">
+        <div class="stats-card">
+          <p class="stats-card-value" id="stat-total-meetings">0</p>
+          <p class="stats-card-label">Meetings Summarized</p>
+        </div>
+        <div class="stats-card">
+          <p class="stats-card-value" id="stat-total-actions">0</p>
+          <p class="stats-card-label">Action Items Extracted</p>
+        </div>
+        <div class="stats-card">
+          <p class="stats-card-value" id="stat-avg-actions">0</p>
+          <p class="stats-card-label">Avg Actions / Meeting</p>
+        </div>
+        <div class="stats-card">
+          <p class="stats-card-value" id="stat-streak">0</p>
+          <p class="stats-card-label">Day Streak 🔥</p>
+        </div>
+      </div>
+
+      <!-- Most active day -->
+      <div class="stats-section-card">
+        <p class="stats-section-title">Most Active Day</p>
+        <p id="stat-active-day" class="stats-big-text">—</p>
+      </div>
+
+      <!-- Sentiment breakdown -->
+      <div class="stats-section-card">
+        <p class="stats-section-title">Sentiment Breakdown</p>
+        <div id="sentiment-breakdown" class="sentiment-breakdown-bars"></div>
+      </div>
+
+      <!-- Most common topics -->
+      <div class="stats-section-card">
+        <p class="stats-section-title">Most Common Topics</p>
+        <div id="common-topics-chart" class="common-topics-chart"></div>
+      </div>
+
+      <!-- Activity heatmap -->
+      <div class="stats-section-card">
+        <p class="stats-section-title">Activity — Last 12 Weeks</p>
+        <div id="activity-heatmap" class="activity-heatmap"></div>
+        <div class="heatmap-legend">
+          <span>Less</span>
+          <span class="legend-cell lv0"></span>
+          <span class="legend-cell lv1"></span>
+          <span class="legend-cell lv2"></span>
+          <span class="legend-cell lv3"></span>
+          <span>More</span>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div id="stats-empty" class="stats-empty" style="display:none;">
+        <p>📭 No meeting history yet.</p>
+        <p>Summarize your first meeting to start seeing stats!</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+
+  <!-- PDF Report Container (hidden, only visible during print) -->
+  <div id="pdf-report-container" class="pdf-report-container">
+    <div id="pdf-report-content"></div>
+  </div>
+</body>
+
+</html>

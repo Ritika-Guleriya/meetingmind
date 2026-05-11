@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetingMind - Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+    <div class="bg-orb"></div>
+    <div class="auth-container">
+        <!-- Left Panel -->
+        <div class="auth-panel auth-panel-left">
+            <div class="auth-branding">
+                <h1 class="auth-logo">MeetingMind</h1>
+                <p class="auth-tagline">AI-Powered Meeting Summaries in Seconds</p>
+            </div>
+            <div class="auth-features">
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-text">
+                        <h3>Lightning Fast</h3>
+                        <p>Get your meeting summaries in seconds, not hours</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-text">
+                        <h3>Precise Analysis</h3>
+                        <p>AI-powered insights tailored to your meetings</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-text">
+                        <h3>Secure & Private</h3>
+                        <p>Your data is encrypted and never shared</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="auth-panel auth-panel-right">
+            <div class="auth-form-container">
+                <h2 class="auth-form-title">Create Your Account</h2>
+                <p class="auth-form-subtitle">Join thousands of professionals using MeetingMind</p>
+
+                <form id="signupForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input 
+                            type="text" 
+                            id="fullName" 
+                            name="fullName" 
+                            class="form-input" 
+                            placeholder="John Doe"
+                            required
+                        >
+                        <span class="form-error" id="nameError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupEmail" class="form-label">Email Address</label>
+                        <input 
+                            type="email" 
+                            id="signupEmail" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="you@example.com"
+                            required
+                        >
+                        <span class="form-error" id="signupEmailError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPassword" class="form-label">Password</label>
+                        <div class="password-input-wrapper">
+                            <input 
+                                type="password" 
+                                id="signupPassword" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="••••••••"
+                                required
+                                minlength="8"
+                            >
+                            <button 
+                                type="button" 
+                                class="password-toggle" 
+                                id="signupPasswordToggle"
+                                aria-label="Toggle password visibility"
+                            >
+                                👁️
+                            </button>
+                        </div>
+                        <div class="password-strength" id="passwordStrength"></div>
+                        <span class="form-error" id="signupPasswordError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <div class="password-input-wrapper">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                class="form-input" 
+                                placeholder="••••••••"
+                                required
+                            >
+                            <button 
+                                type="button" 
+                                class="password-toggle" 
+                                id="confirmPasswordToggle"
+                                aria-label="Toggle password visibility"
+                            >
+                                👁️
+                            </button>
+                        </div>
+                        <span class="form-error" id="confirmPasswordError"></span>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input 
+                            type="checkbox" 
+                            id="terms" 
+                            name="terms"
+                            class="form-checkbox"
+                            required
+                        >
+                        <label for="terms" class="checkbox-label">
+                            I agree to the <a href="#" class="auth-link">Terms of Service</a> and <a href="#" class="auth-link">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="auth-btn" id="signupBtn">
+                        Create My Account
+                    </button>
+
+                    <span class="form-error" id="formError"></span>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.html" class="auth-link">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Password strength indicator
+        document.getElementById('signupPassword').addEventListener('input', (e) => {
+            const password = e.target.value;
+            const strengthDiv = document.getElementById('passwordStrength');
+            
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+            const strengths = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
+            const colors = ['', '#ef4444', '#f59e0b', '#eab308', '#84cc16', '#10b981'];
+            
+            strengthDiv.innerHTML = strength ? `
+                <div class="strength-bar" style="background-color: ${colors[strength]}; width: ${strength * 20}%"></div>
+                <span style="color: ${colors[strength]}">${strengths[strength]}</span>
+            ` : '';
+        });
+
+        // Handle signup form submission
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Clear errors
+            clearErrors();
+            
+            // Validate
+            if (password !== confirmPassword) {
+                document.getElementById('confirmPasswordError').textContent = 'Passwords do not match';
+                return;
+            }
+            
+            if (password.length < 8) {
+                document.getElementById('signupPasswordError').textContent = 'Password must be at least 8 characters';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8000/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ fullName, email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Signup failed');
+                }
+
+                // Store token
+                localStorage.setItem('authToken', data.access_token);
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', fullName);
+
+                // Redirect to main app
+                window.location.href = 'index.html';
+            } catch (error) {
+                document.getElementById('formError').textContent = error.message;
+            }
+        });
+
+        // Password toggles
+        document.getElementById('signupPasswordToggle').addEventListener('click', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('signupPassword');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        });
+
+        document.getElementById('confirmPasswordToggle').addEventListener('click', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('confirmPassword');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        });
+
+        function clearErrors() {
+            document.getElementById('nameError').textContent = '';
+            document.getElementById('signupEmailError').textContent = '';
+            document.getElementById('signupPasswordError').textContent = '';
+            document.getElementById('confirmPasswordError').textContent = '';
+            document.getElementById('formError').textContent = '';
+        }
+    </script>
+</body>
+</html>

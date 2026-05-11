@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetingMind - Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+    <div class="bg-orb"></div>
+    <div class="auth-container">
+        <!-- Left Panel -->
+        <div class="auth-panel auth-panel-left">
+            <div class="auth-branding">
+                <h1 class="auth-logo">MeetingMind</h1>
+                <p class="auth-tagline">AI-Powered Meeting Summaries in Seconds</p>
+            </div>
+            <div class="auth-features">
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">
+                        <h3>Instant Summaries</h3>
+                        <p>Get comprehensive meeting summaries powered by AI</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">
+                        <h3>Action Items</h3>
+                        <p>Never miss a task with automatic action item extraction</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-text">
+                        <h3>Smart Analytics</h3>
+                        <p>Extract key decisions and topics from your meetings</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="auth-panel auth-panel-right">
+            <div class="auth-form-container">
+                <h2 class="auth-form-title">Welcome Back</h2>
+                <p class="auth-form-subtitle">Login to your MeetingMind account</p>
+
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="you@example.com"
+                            required
+                        >
+                        <span class="form-error" id="emailError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="password-input-wrapper">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="••••••••"
+                                required
+                            >
+                            <button 
+                                type="button" 
+                                class="password-toggle" 
+                                id="passwordToggle"
+                                aria-label="Toggle password visibility"
+                            >
+                                👁️
+                            </button>
+                        </div>
+                        <span class="form-error" id="passwordError"></span>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input 
+                            type="checkbox" 
+                            id="rememberMe" 
+                            name="rememberMe"
+                            class="form-checkbox"
+                        >
+                        <label for="rememberMe" class="checkbox-label">Remember me</label>
+                    </div>
+
+                    <button type="submit" class="auth-btn" id="loginBtn">
+                        Login to MeetingMind
+                    </button>
+
+                    <span class="form-error" id="formError"></span>
+
+                    <div class="auth-divider">OR</div>
+
+                    <button type="button" class="auth-btn-secondary" id="guestBtn">
+                        Continue as Guest
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="signup.html" class="auth-link">Sign up here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            try {
+                clearErrors();
+                const response = await fetch('http://localhost:8000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Login failed');
+                }
+
+                // Store token
+                localStorage.setItem('authToken', data.access_token);
+                if (rememberMe) {
+                    localStorage.setItem('rememberMe', 'true');
+                }
+                localStorage.setItem('userEmail', email);
+
+                // Redirect to main app
+                window.location.href = 'index.html';
+            } catch (error) {
+                document.getElementById('formError').textContent = error.message;
+            }
+        });
+
+        // Handle guest login
+        document.getElementById('guestBtn').addEventListener('click', () => {
+            localStorage.setItem('guestMode', 'true');
+            window.location.href = 'index.html';
+        });
+
+        // Password toggle
+        document.getElementById('passwordToggle').addEventListener('click', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('password');
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+        });
+
+        function clearErrors() {
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('passwordError').textContent = '';
+            document.getElementById('formError').textContent = '';
+        }
+    </script>
+</body>
+</html>

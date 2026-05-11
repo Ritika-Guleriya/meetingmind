@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+groq
+python-multipart
+PyMuPDF
+python-docx
+python-dotenv
+python-jose[cryptography]
+passlib[argon2]
+pydantic
+langdetect
