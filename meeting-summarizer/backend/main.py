@@ -130,7 +130,7 @@ app.add_middleware(
     allow_origins=[
         "https://meeting-mind-rtmg.onrender.com", 
         "http://localhost:8000",
-        "*"
+        "https://meetingmind-six.vercel.app"
      ],
     allow_credentials=True,
     allow_methods=["*"],
