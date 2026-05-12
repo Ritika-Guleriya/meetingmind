@@ -274,7 +274,7 @@ async function handleSummarize() {
 
     formData.append('template_id', state.selectedTemplate);
     // Call API with authentication
-    const response = await authenticatedFetch('http://localhost:8000/summarize', {
+    const response = await authenticatedFetch('https://meeting-mind-rtmg.onrender.com/summarize', {
       method: 'POST',
       body: formData,
     });
@@ -387,6 +387,10 @@ function displayResults(results) {
 
   // Show results section
   elements.resultsSection.style.display = 'block';
+
+  // Show export buttons row
+  const exportButtons = document.querySelector('.export-buttons');
+  if (exportButtons) exportButtons.style.display = 'flex';
 
   // Show download PDF report button
   const pdfBtn = document.getElementById('download-pdf-btn');

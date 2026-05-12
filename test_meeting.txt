@@ -1,0 +1,12 @@
+This is a test meeting transcript. 
+
+John: We need to fix the critical bugs in the payment system
+Sarah: I agree, I'll create tickets for each one
+Mike: When can we finish this?
+John: Target is Friday end of day
+Sarah: I'll assign developers tomorrow
+
+Action items:
+- Fix payment bugs
+- Create support tickets
+- Test thoroughly

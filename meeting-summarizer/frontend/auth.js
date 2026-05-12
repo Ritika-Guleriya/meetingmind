@@ -47,12 +47,15 @@ function checkAuth() {
 
 // Add auth header to fetch requests
 async function authenticatedFetch(url, options = {}) {
-    const headers = {
-        ...options.headers,
-    };
+    const headers = options.headers || {};
 
     if (authManager.getToken()) {
         headers['Authorization'] = `Bearer ${authManager.getToken()}`;
+    }
+
+    // Don't set Content-Type for FormData - let browser handle it
+    if (options.body instanceof FormData && !headers['Content-Type']) {
+        delete headers['Content-Type'];
     }
 
     return fetch(url, {

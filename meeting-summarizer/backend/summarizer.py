@@ -129,7 +129,7 @@ TRANSCRIPT:
         
         # Parse JSON response
         try:
-            result = json.loads(response_text)
+            result = json.loads(response_text, strict=False)
             result["detected_language"] = lang_name
             result["detected_language_code"] = lang_code
             result["template_used"] = get_template(template_id)["name"]

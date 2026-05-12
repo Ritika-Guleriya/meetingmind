@@ -127,7 +127,11 @@ app = FastAPI(title="Meeting Summarizer API", version="1.0.0")
 # Configure CORS - allow all origins for development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://meeting-mind-rtmg.onrender.com", 
+        "http://localhost:8000",
+        "*"
+     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -216,8 +220,11 @@ async def summarize_endpoint(
     - email_draft: Professional follow-up email
     """
     
+    logger.info(f"Received request with transcript_text={bool(transcript_text)}, file={file.filename if file else None}, template_id={template_id}")
+    
     # Validate that at least one input is provided
     if not transcript_text and not file:
+        logger.error("No input provided")
         raise HTTPException(
             status_code=400,
             detail="No transcript provided. Please paste text or upload a file."
@@ -226,14 +233,18 @@ async def summarize_endpoint(
     try:
         # Determine which input to use
         if file and file.filename:
+            logger.info(f"Processing file: {file.filename}")
             if is_audio_file(file.filename):
                 # NEW: audio/video — transcribe first, then summarize as usual
+                logger.info("File is audio/video, transcribing...")
                 file_content = await file.read()
                 transcript = await transcribe_audio(file_content, file.filename)
+                logger.info(f"Transcription completed, transcript length: {len(transcript)}")
             else:
                 # EXISTING: text/PDF/DOCX — unchanged, do not touch this
                 logger.info(f"Parsing file: {file.filename}")
                 transcript = await parse_file(file)
+                logger.info(f"File parsed, transcript length: {len(transcript)}")
                 if not transcript.strip():
                     raise HTTPException(
                         status_code=400,
@@ -241,6 +252,7 @@ async def summarize_endpoint(
                     )
         elif transcript_text and transcript_text.strip():
             # EXISTING: pasted text — unchanged, do not touch this
+            logger.info("Using pasted text")
             transcript = transcript_text.strip()
         else:
             raise HTTPException(status_code=400, detail="No transcript provided. Please paste text or upload a file.")
